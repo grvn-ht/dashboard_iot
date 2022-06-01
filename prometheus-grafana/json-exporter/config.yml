@@ -1,0 +1,22 @@
+headers:
+  MyHeader: MyHeaderValue
+
+metrics:
+  - name: time
+    type: object
+    help: timeeee
+    path: '{}'
+    values:
+      Time: '{.Time}'
+  - name: temp
+    type: object
+    help: temperature
+    path: '{}'
+    values:
+      Time: '{.Temperature}'
+  - name: hum
+    type: object
+    help: hummmm
+    path: '{}'
+    values:
+      Time: '{.Humidite}'

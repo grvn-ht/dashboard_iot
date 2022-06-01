@@ -1,0 +1,4 @@
+mysql-connector-python==8.0.28
+pillow==9.1.0
+pysftp==0.2.9
+requests==2.27.1

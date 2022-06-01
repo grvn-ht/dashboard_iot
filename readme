@@ -1,0 +1,48 @@
+
+
+
+pour insérer une image, créer un panel text avec le html menant à l'image voulu!!!
+
+
+
+
+
+
+
+
+
+    extra_hosts:
+    - "host.docker.internal:host-gateway"
+
+
+  grafana:
+    image: grafana/grafana:latest
+    volumes:
+            - /home/gu/Documents/Armoire_W/prometheus-grafana/grafana/grafana.ini:/etc/grafana/grafana.ini
+            - /home/gu/Documents/Armoire_W/prometheus-grafana/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml
+    ports:
+      - 3000:3000
+    links:
+            - prometheus
+
+
+  grafana:
+    image: grafana/grafana:latest
+    volumes:
+            - /home/gu/Documents/Armoire_W/prometheus-grafana/grafana/grafana.ini:/etc/grafana/grafana.ini
+            - /home/gu/Documents/Armoire_W/prometheus-grafana/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml
+    ports:
+    - 3000:3000
+    environment:
+      GF_RENDERING_SERVER_URL: http://renderer:8081/render
+      GF_RENDERING_CALLBACK_URL: http://grafana:3000/
+      GF_LOG_FILTERS: rendering:debug
+    links:
+            - prometheus
+
+  renderer:
+    image: grafana/grafana-image-renderer:latest
+    ports:
+    - 8081
+    volumes:
+      - /home/gu/Documents/Armoire_W/prometheus-grafana/renderer/config.json:/usr/src/app/config.json

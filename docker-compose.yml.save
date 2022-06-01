@@ -1,0 +1,67 @@
+version: "3.7"
+services:
+
+  json_exporter:
+    container_name: json_export
+    image: quay.io/prometheuscommunity/json-exporter
+    restart: always
+    container_name: json_exporter
+    volumes:
+      - ./prometheus-grafana/json-exporter/config.yml:/config.yml:ro
+    ports:
+      - 7979:7979
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    restart: always
+    volumes:
+      - ./prometheus-grafana/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:master 
+    restart: always
+    volumes:
+            - ./prometheus-grafana/grafana/grafana.ini:/etc/grafana/grafana.ini
+            - ./prometheus-grafana/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml
+            - ./photo:/usr/share/grafana/public/img/
+            - mygraph:/var/lib/grafana
+    environment:
+      - GF_SERVER_DOMAIN=www.terjack.space
+      - GF_SERVER_ROOT_URL=http://151.80.152.245:42/weedass
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+    expose:
+      - 3000
+    ports:
+      - 3000:3000
+    links:
+      - prometheus
+
+  db:
+    container_name: db
+    image: arm64v8/mysql:oracle
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+     MYSQL_DATABASE: db
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./prometheus-grafana/mysql:/var/lib/mysql
+
+  py:
+    container_name: python
+    build: ./prometheus-grafana/py
+    restart: always
+    volumes:
+      - ./photo/:/photo/
+      - ./prometheus-grafana/py/get_data.py:/get_data.py
+      - ./prometheus-grafana/py/crontab:/crontab
+    links:
+      - db
+
+volumes:
+  mygraph:
